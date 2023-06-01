@@ -1,0 +1,317 @@
+        BASH Notes
+ 
+
+
+     ##Overview
+Bash stands for bourne again
+widely used on linux
+supports job control, commmand line editing, and command history
+goal in bash is to automate tasks
+
+
+##Linux commands and switches
+    CTRL + P = up 
+    CTRL + N = down
+    CTRL + A = Start of a line
+    CTRL + E = End of a line
+    CTRL + U = backspace to delete everything
+    CTRL + L = clears screen
+    ALT + (F or B) = forward or back
+    
+    history = shows history (in numerical order)
+    !! = last command ran
+    reference command (! (number of line on history command))
+    
+    man bash = opens the extensive BASH man page
+    man find = Opens man page for find command
+    G = move to end of man page
+    g = move to start of man page
+    /pattern = Search forward for (N-th) matching line
+    ?pattern = Search backward
+    &pattern = display only matching lines
+    bash [options] [command_string | file]
+    n or shift+n = moves between search results
+    q = quit man
+    
+    
+                                BASH IS CASE SENSITIVE
+                               
+##ONLINE RESOURCES
+    explainshell (breaks down command in linux and explains what that command is doing)  
+    
+    curl is a command line url request (way in linux to grab a webpage) (site designed to work with this (cheat.sh) 
+    command =  (curl cht.sh/grep)
+
+##ORDER OF EVALUATION
+    1. Redirection (man bash (> or >>) bash.txt) instead of printing to the screen it redirects to a text file or creates a new one if it doens excist.) 
+    2. Alias - give a nam to something that does a command (also have the baikity to create your own alias') (alias <command to be written over>='command')
+    3. Parameter expansion, command - ./WIP.sh (to get info) runnning subshells in bash 
+    4. Shell functions - (hello() { echo "hello from function";} run hello hits function **unless an alias is covering that command.
+    5. Built-in commands - (help is a built in command) built in to bash
+    6. Hash tables - (temporary cache)
+    7.Path variable - way for you to tell it where to look (specify diffeent locations of where your at) (ls ~) 
+    8. Error {eg command not found} - 
+    
+    ##BRACE EXPANSION
+        -a way for you to group options to a command (ex: wanted to do an ls on multiple location (ls {BASH,SSH,ZIP}) **do not put spaces
+        -ex: touch file{1..10}(<.log> to end to make type of these files) (if its a numeric increment you can do a .. such as 1 through 10) 
+
+
+    ** use the type function to find what the command will do (type -a hello (outputs what that command will do and what the alias is) 
+    **use unset hello to unalias a function.
+
+
+##FILESYSTEM AND MANIPULATION
+    -absolute, home, and relative file references
+        home directory ~/ or $HOME
+        absolute paths /etc/passwd
+        relativep paths 
+    -filesystem commmands
+        touch, mkdir, rm, rmdir, ls, cd
+    -Links
+        symbolic link (shortcut pointer
+        hard link (persistent cannot cross file systems
+        
+       
+##PROCESSES AND MEMORY
+    Process Hierarchy
+      -Kernel
+    Processes Snapshot
+      -ps
+    Terminating
+      -kill, killall
+
+##CAT, MORE || LESS
+    
+    cat - concatenate files and print on the standard output
+      
+    more - gives you less to begin with printing out only what you can see and go through the pages just like a book
+      -space ot go to next page also tell hows far into it you are
+    
+    less - goes line by line (default when going through man
+   
+##FINDING FILES AND DIRS
+    find command - searches files in a directroy hierarchy (find /
+      locate, whereis, which, find
+    locate will find something and where it is installed
+
+##GREP
+    grep - print lines matching a point
+    ex: ls | grep .log
+    ex: grep "-" man.txt (finds all the - in the given document)
+    ex: grep -oc "-" man.txt (prints how many times the line occurs in the document)
+    
+    egrep - almost an alias for grep -e which is an extended regex allowing for the use of regex based patterns
+    
+    **always good to ply safe and put double quote ("") around objects
+
+##CUT
+    cut - remove sections from each line of files
+    OPTIONS
+      -d delimiter
+      -f fields
+      -c characters
+      -s only delimited
+      --output-delimiter
+      ex: tail /etc/passwd | cut -d: -f6
+ 
+ 
+    ##EXCERSICES 1-5
+
+Brace expansion is a mechanism by which arbitrary strings may be generated, for commands that will take multiple arguements. For the below examples, the first example is equivalent to the second command.
+
+  mkdir {1123,1134,1145,1156}
+
+Use Brace-Expansion to create the following files within the $HOME/1123 directory. You may need to create the $HOME/1123 directory. Make the following files, but utilze Brace Expansion to make all nine files with one touch command.
+
+Files to create:
+
+1.txt
+2.txt
+3.txt
+4.txt
+5.txt
+6~.txt
+7~.txt
+8~.txt
+9~.txt
+
+  touch  1123/{1..5}.txt 1123/{6~,7~,8~,9~}.txt  or brac expansion within brace exansion 1123/{{1..5},{5..9}~}.txt
+
+ist all files in $HOME/1123 that end in .txt. Omit the files containing a tilde (~) character.
+
+While this activity can be accomplished with only find, it can also be combined with grep as well.
+
+  find ~/1123 -name *.txt ! -name *~*
+
+
+
+Using ONLY the find command, find all empty files/directories in directory /var and print out ONLY the filename (not absolute path), and the inode number, separated by newlines
+
+  find /var -empty -printf "%i %f\n"
+  
+Using ONLY the find command, find all files on the system with inode 4026532575 and print only the filename to the screen, not the absolute path to the file, separating each filename with a newline. Ensure unneeded output is not visible.
+  find / -inum 4026532575 -printf "%f\n"
+
+
+Using only the ls -l and cut Commands, write a BASH script that shows all filenames with extensions ie: 1.txt, etc., but no directories, in $HOME/CUT.
+Write those to a text file called names in $HOME/CUT directory.
+Omit the names filename from your output.
+
+    ls -l ~/CUT | cut -d. -s -f1,2 | cut -d' ' -f9 > ~/CUT/names
+    
+
+    ##FIND OPTIONS
+    
+-empty = find empty files in the given search
+-inum = find files by their inode number
+-printf = format option for what prints   
+      %b - Print the argument while expanding backslash escape sequences.
+      %q - Print the argument shell-quoted, reusable as input.
+      %d, %i - Print the argument as a signed decimal integer.
+      %u - Print the argument as an unsigned decimal integer.
+      %o - Print the argument as an unsigned octal integer.
+      %x, %X - Print the argument as an unsigned hexadecimal integer. %x prints lower-case letters and %X prints upper-case.
+      %e, %E - Print the argument as a floating-point number in exponential notation. %e prints lower-case letters and %E prints upper-case.
+      %a, %A - Print the argument as a floating-point number in hexadecimal fractional notation. %a prints lower-case letters and %A prints upper-case.
+      %g, %G - Print the argument as a floating-point number in normal or exponential notation, whichever is more appropriate for the given value and precision. %g prints lower-case letters and %G prints upper-case.
+      %c - Print the argument as a single character.
+      %f - Print the argument as a floating-point number.
+      %s - Print the argument as a string.
+      %% - Print a literal % symbol.
+
+
+
+    ##AWK
+-scans a file line by line
+-splits each input line into fields
+-compare input lines
+
+-used for transforming data files and produce formatted reports.
+-USES: 
+    awk '{print}' menu.txt
+    awk '/latte/ {print}' menu.txt (prints any form of latte (will also print out anything else in that line))
+-To delimit by whitespace ex: awk '{print} $1,$4}' coffeeshop.txt
+                                             ^
+                                     fields it was pslit up into
+EX: tail /etc/passwd | awk -F: '{print $NF}'   (print last part of etc passwd LAST FIELD)
+                            ^           ^ Number of fields 
+                  input field seperator (lower f is the source file)
+-NR option in print curly braces allows to add lines
+EX: AWK 'NR==3, NR==7 {print NR,$0}' coffeeshop.txt    
+    
+    ##SORT
+    
+-Wont change actual file need to redirect
+-sort will normally sort things alhanumeric starting with numbers then going to capital letter, then on to lower case.
+-r will reverse
+-k 2,4 will creae colmns specified.
+-u will remove duplicates
+**caps come before lower
+-n sorts files with numbers in them (starts with negatives along with whitespace) 
+-^ reverse = -nr
+
+    ##SED
+    
+-sed 's/tea/coffee/<g>(replaces all instances)' beststuff.xt (changes instances of tea into coffee)
+      ^             ^ replace this with a number will replace that instance of the change
+ stands for substitution
+**remember doesnt change unless outfiled
+
+-sed '5 s/crazy/coffee/"
+      ^
+  changes that line
+
+
+    ##uniq
+-EX: uniq -c -i sortcoffee.txt
+-line comparison from the line baove and the line before
+-to do a complete unique comparison you must sort it before
+-sort then pipe into unique then tweak
+
+
+    ##conditionals
+    
+-used in a script to mach what to do
+-e          file exists ?
+-f          file exists, and is regular file ?
+-d          file exists, and is a directory ?
+-s          file exists, and is NOT empty ?
+-x          file exists, and IS executable ?
+-w          file exists, and is writable by me ?
+-gt >       is greater than
+-lt <       is less than
+-ge         is greater than or equal to
+-le         is less than or equal to
+-eq ==      is equal to
+-ne !=      is NOT equal to
+
+-EX: if [[ -f /etc/passwd ]]; then
+
+**remember which works with string and which with numbers
+**!= is for strings, -ne for numbers
+
+-!= symbols uses an alphanumeric equation
+- using letters sych as -ne does an arithmetic comparison
+
+    ##COMMAND SUBSTITUTION
+    
+-EX: A=$(tail /etc/passwd)
+-if $A is ran it will run the command in that variable
+-variables are only in that terminal (if you want persistence save it on your profile)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
