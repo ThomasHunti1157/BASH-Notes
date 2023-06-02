@@ -420,11 +420,52 @@ awk -F: -v "awk_var=$2" -v "awk_variable=$3" 'BEGIN {OFS=":"} {$2=awk_var} {$3=a
 
 }
 myfunc
+               ##ACTIVITY 11
+               Using find, find all files under the $HOME directory with a .bin extension ONLY.
+Once the file(s) and their path(s) have been found, remove the file name from the absolute path output.
+Ensure there is no trailing / at the end of the directory path when outputting to standard output.
+You may need to sort the output depending on the command(s) you use.
+               
+find ~/ -name "*.bin" | rev | cut -d/ -f2- | rev | sort | uniq
+               
+               
+               ##ACTIVITY 12
+               Write a script which will copy the last entry/line in the passwd-like file specified by the $1 positional parameter
+Modify the copied line to change:
+User name to the value specified by $2 positional parameter
+Used id and group id to the value specified by $3 positional parameter
+Home directory to a directory matching the user name specified by $2 positional parameter under the /home directory
+The default shell to `/bin/bash'
+Append the modified line to the end of the file
+                
+passwd_file=$1
+username=$2
+user_id=$3
+group_id=$3
+home_dir="/home/$username"
+default_shell="/bin/bash"
 
 
-commandsub=$(find /bin /sbin /usr/bin /usr/sbin -executable | sort | sed -n 10p)
+last_line=$(tail -n 1 "$passwd_file")
 
-md5sum $commandsub
+
+modified_line=$(echo "$last_line" | awk -F ':' -v user="$username" -v uid="$user_id" -v gid="$group_id" -v home="$home_dir" -v shell="$default_shell" 'BEGIN{OFS=FS}{ $1=user; $3=uid; $4=gid; $6=home; $7=shell; print }')
+
+
+echo "$modified_line" >> "$passwd_file"
+
+
+                ##ACTIVITY 13
+                Find all executable files under the following four directories:
+/bin
+/sbin
+/usr/bin
+/usr/sbin
+Sort the filenames with absolute path, and get the md5sum of the 10th file from the top of the list.
+
+commandsub=$(find /bin /sbin /usr/bin /usr/sbin -type f -executable | sort | head -10 | tail -1)
+
+md5sum $commandsub | awk -F" " '{ print $1 }'
 
 
 
@@ -452,8 +493,24 @@ modified_line=$(echo "$last_line" | awk -F ':' -v user="$username" -v uid="$user
 echo "$modified_line" >> "$passwd_file"
 
 echo "Modified line appended to $passwd_file"
++
+                ##ACTIVITY 14
+                Sort the /etc/passwd file numerically by the GID field.
+For the 10th entry in the sorted passwd file, get an md5 hash of that entry’s home directory.
+Output ONLY the MD5 hash of the directory's name to standard output.
+awk -F: '{print $4,$6}' /etc/passwd | sort -n | head | tail -1 | awk -F " " '{print $2}' | md5sum | awk -F " " '{print $1}'
 
 
+
+                ##ACTIVITY 15
+                Write a script which will find and hash the contents 3 levels deep from each of these directories: /bin /etc /var
+Your script should:
+Exclude named pipes. These can break your script.
+Redirect STDOUT and STDERR to separate files.
+Determine the count of files hashed in the file with hashes.
+Determine the count of unsuccessfully hashed directories.
+Have both counts output to the screen with an appropriate title for each count.
+                
 #!/bin/bash
 
 # Function to calculate MD5 hash of a file
