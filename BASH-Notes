@@ -428,6 +428,30 @@ md5sum $commandsub
 
 
 
+#!/bin/bash
+
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+  echo "Usage: $0 <passwd_file> <username> <user_id>"
+  exit 1
+fi
+
+passwd_file=$1
+username=$2
+user_id=$3
+group_id=$3
+home_dir="/home/$username"
+default_shell="/bin/bash"
+
+# Copy the last entry/line in the passwd-like file
+last_line=$(tail -n 1 "$passwd_file")
+
+# Modify the copied line
+modified_line=$(echo "$last_line" | awk -F ':' -v user="$username" -v uid="$user_id" -v gid="$group_id" -v home="$home_dir" -v shell="$default_shell" 'BEGIN{OFS=FS}{ $1=user; $3=uid; $4=gid; $6=home; $7=shell; print }')
+
+# Append the modified line to the end of the file
+echo "$modified_line" >> "$passwd_file"
+
+echo "Modified line appended to $passwd_file"
 
 
 
