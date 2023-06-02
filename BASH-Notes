@@ -294,8 +294,145 @@ You are not limited to a particular command, however you must use openssl. Type 
 Using ONLY sed, write all lines from $HOME/passwd into $HOME/PASS/passwd.txt that do not end with either /bin/sh or /bin/false.
 
                 sed '/\/false/d' ~/passwd | sed '/\/sh/d' > ~/PASS/passwd.txt
+                                           or
+                sed -e '/\/bin\/false/d' -e '/\/bin\/sh/d' ~/passwd > ~/PASS/passwd.txt
+                     ^
+               combines multiple patterns provided
 
-                ##
+                ##DAY 3
+                
+                ##BASH PARAMETERS
+
+-In a bash context, a parameter is an entity that stores a valu
+        VARIABLE CAN BE
+-NAME (variable)
+-NUMBER (positional parameter)
+-special character (special parameter)
+
+(variable is a parameter denoted by a name)
+
+                ##BASH PARAMETERS (VARIABLES)
+                
+-variables are parameters set with a name (identifier) on the left of an equal sign and a value (or nothing) on the right side. Variables are user defined
+  **no spaces are allowed 
+  
+                ##SPECIAL PARAMETERS
+                
+-BASH includes several special parameters that you can use in your scripts.
+.Builtin Variables
+
+$*
+The positional parameters, starting from one.
+
+$@
+The positional parameters, starting from one.
+
+$#
+The number of positional parameters.
+
+$?
+The exit status of the previous command.
+
+$-
+The current option flags of the shell.
+
+$$
+The process ID of the shell.
+
+$!
+The process ID of the most recent background job.
+
+$0
+$0 is set to the name of the script.
+
+$_
+First command in a script, is the path/name of the script as invoked.
+  Otherwise, it is the last parameter passed to the most recent command.
+
+                ##FUNCTIONS
+                
+-allow breaking of code up into a manageable chunker
+-series of commands executed as if it wsas a single command.
+**declare functions first
+
+EX: myfunc() {
+echo Hello I am a function
+##This is a comment
+}
+
+-Calling a function EX: myfunc
+
+**shell based functions (only ascessible in the shell created)
+
+function getuser()
+{
+        echo "Make a choice [1,2,3]:"
+        read userchoice
+        case $userchoice in 
+                (1) echo one ;;
+                (2) echo two ;;
+                (3) echo three ;;
+                (*) echo other ;;
+        esac
+}
+ getuser
+
+                ##VARIABLE SUBSTITUTION
+                
+-substituting a vairable with its value
+fun1() {
+        #simple variable substitution
+        name="John"
+        echo $name
+}
+un2() {
+        #var sub within double quotes
+        name="John"
+        echo "My name is $name
+}
+fun3() {
+        #var sub within single quotes
+        name="John"
+        echo 'My name is $name'
+}
+fun4() {
+        #Curly braces to seperate variables
+        name="John"
+        echo "My name is $nameny5"
+        echo "My name is ${name}ny5"
+}
+fun5() {
+        #Curly braces and values to sub
+        name="John"
+        echo "My name is ${name:0:2}"
+}
+
+
+                ##DAY 3 ACTIVITIES 11-15
+            
+
+
+
+
+myfunc() {
+
+awk -F: -v "awk_var=$2" -v "awk_variable=$3" 'BEGIN {OFS=":"} {$2=awk_var} {$3=awk_variable} {$4=awk_variable} {$6='/'awk_variable} {$7='/bin/bash'} {print $0}' $1
+
+}
+myfunc
+
+
+commandsub=$(find /bin /sbin /usr/bin /usr/sbin -executable | sort | sed -n 10p)
+
+md5sum $commandsub
+
+
+
+
+
+
+
+
 
 
 
