@@ -510,7 +510,13 @@ cat "$count_file"
 
 
 
+num1=$(find /bin /etc /var -maxdepth 3)
+md5sum $num1 2> errors.txt 1>success.txt
+num2=$(cat errors.txt | grep -v denied | wc -l)
+num3=$(cat success.txt | wc -l)
 
+echo Successfully Hashed Files: $num3
+echo Unsuccessfully Hashed Directories: $num2
 
 
 
