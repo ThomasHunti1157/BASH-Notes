@@ -454,6 +454,59 @@ echo "$modified_line" >> "$passwd_file"
 echo "Modified line appended to $passwd_file"
 
 
+#!/bin/bash
+
+# Function to calculate MD5 hash of a file
+calculate_hash() {
+  local file_path=$1
+  md5sum "$file_path" | awk '{ print $1 }'
+}
+
+# Function to recursively hash contents 3 levels deep from a directory
+hash_contents() {
+  local directory=$1
+  local level=$2
+  local hash_file=$3
+  local count_file=$4
+
+  # Redirect STDOUT and STDERR to separate files
+  exec > >(tee -a "$hash_file") 2> >(tee -a "$count_file" >&2)
+
+  # Determine the count of files hashed
+  local count=0
+
+  # Process files and directories within the given directory
+  while IFS= read -r -d '' file; do
+    if [[ -f $file ]]; then
+      # Calculate MD5 hash of regular files
+      local hash=$(calculate_hash "$file")
+      echo "$hash: $file"
+      ((count++))
+    elif [[ -d $file && $level -lt 3 ]]; then
+      # Recursively hash contents of subdirectories (up to 3 levels deep)
+      hash_contents "$file" $((level + 1)) "$hash_file" "$count_file"
+    fi
+  done < <(find "$directory" -maxdepth 1 -type f -not -pipe -print0)
+
+  echo "Count: $count" >> "$count_file"
+}
+
+# Define output files
+hash_file="hashed_contents.txt"
+count_file="count.txt"
+
+# Clear output files
+> "$hash_file"
+> "$count_file"
+
+# Hash contents 3 levels deep from each directory
+hash_contents "/bin" 1 "$hash_file" "$count_file"
+hash_contents "/etc" 1 "$hash_file" "$count_file"
+hash_contents "/var" 1 "$hash_file" "$count_file"
+
+# Output count of files hashed
+echo "Count of hashed files:"
+cat "$count_file"
 
 
 
