@@ -680,7 +680,14 @@ done
 
 
 
-
+A=$(ip route | head -1 | cut -d" " -f3)
+B=$(find /* -name "ping" 2>nul | head -1)
+C=$($B  -c 6 $A)
+if [[ (cut -d" " -f4) gt 0 ]]; then
+   echo "success";
+else
+   echo "failure";
+fi 
 
 
 
