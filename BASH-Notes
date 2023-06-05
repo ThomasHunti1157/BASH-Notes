@@ -427,7 +427,9 @@ Ensure there is no trailing / at the end of the directory path when outputting t
 You may need to sort the output depending on the command(s) you use.
                
 find ~/ -name "*.bin" | rev | cut -d/ -f2- | rev | sort | uniq
-               
+                                or
+find $HOME -name "*.bin" | awk 'BEGIN{FS="/";OFS="/"}{NF=NF-1; print $0}' | sort -u |uniq 
+
                
                ##ACTIVITY 12
                Write a script which will copy the last entry/line in the passwd-like file specified by the $1 positional parameter
@@ -454,6 +456,9 @@ modified_line=$(echo "$last_line" | awk -F ':' -v user="$username" -v uid="$user
 
 echo "$modified_line" >> "$passwd_file"
 
+                
+
+
 
                 ##ACTIVITY 13
                 Find all executable files under the following four directories:
@@ -466,7 +471,7 @@ Sort the filenames with absolute path, and get the md5sum of the 10th file from 
 commandsub=$(find /bin /sbin /usr/bin /usr/sbin -type f -executable | sort | head -10 | tail -1)
 
 md5sum $commandsub | awk -F" " '{ print $1 }'
-
+                
 
 
 #!/bin/bash
@@ -498,8 +503,10 @@ echo "Modified line appended to $passwd_file"
                 Sort the /etc/passwd file numerically by the GID field.
 For the 10th entry in the sorted passwd file, get an md5 hash of that entry’s home directory.
 Output ONLY the MD5 hash of the directory's name to standard output.
-awk -F: '{print $4,$6}' /etc/passwd | sort -n | head | tail -1 | awk -F " " '{print $2}' | md5sum | awk -F " " '{print $1}'
 
+awk -F: '{print $4,$6}' /etc/passwd | sort -n | head | tail -1 | awk -F " " '{print $2}' | md5sum | awk -F " " '{print $1}'
+                or
+                
 
 
                 ##ACTIVITY 15
@@ -565,7 +572,8 @@ hash_contents "/var" 1 "$hash_file" "$count_file"
 echo "Count of hashed files:"
 cat "$count_file"
 
-
+                or
+                
 
 num1=$(find /bin /etc /var -maxdepth 3)
 md5sum $num1 2> errors.txt 1>success.txt
@@ -575,7 +583,21 @@ num3=$(cat success.txt | wc -l)
 echo Successfully Hashed Files: $num3
 echo Unsuccessfully Hashed Directories: $num2
 
-
+                or
+                
+mkdir $HOME/HASHES
+find /bin /etc /var -maxdepth -3 ! -type p -exec md5sum {} > $HOME/HASHES/success 2> $HOME/HASHES/fail \;
+A=$(wc -1 $HOME/HASHES/success | awk '{print $1}')
+B=$(grep -c "Is a directory" $HOME/HASHES/fail)
+if [[ "$A" ]]; 
+        then
+                echo "Successfully Hashed Files: $A";
+                echo "Unsuccessfully Hashed Files: $B";
+        else 
+                echo "oops"; -maxdepth 3
+fi
+                ##DAY 4 NOTES
+                
 
 
 
