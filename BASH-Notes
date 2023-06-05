@@ -826,6 +826,28 @@ done
                         
 
 
+#!/bin/bash
+
+# Find all files in /etc directory and obtain their octal permissions
+find /etc -type f -exec stat -c '%a %n' {} + > temp.txt
+
+# Separate the files based on their octal permissions
+awk '{ if ($1 <= 640) print $0 > "low.txt"; else print $0 > "high.txt" }' temp.txt
+
+# Sort and count the files in low.txt and output the results
+echo "Files with octal permissions 0-640:"
+echo "---------------------------------"
+sort "low.txt" | uniq -c | sort -nr
+echo
+
+# Sort and count the files in high.txt and output the results
+echo "Files with octal permissions >= 642:"
+echo "-----------------------------------"
+sort "high.txt" | uniq -c | sort -nr
+echo
+
+# Clean up temporary files
+rm temp.txt low.txt high.txt
 
 
 
