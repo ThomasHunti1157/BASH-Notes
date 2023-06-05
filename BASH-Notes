@@ -598,23 +598,84 @@ if [[ "$A" ]];
 fi
                 ##DAY 4 NOTES
                 
+                ##LOOPS
+                
+                ##FOR LOOPS
+                
+for $var in <list>;
+        do
+                echo $var
+        done
+
+                or
+
+for $x in $(cat /etc/passwd | awk -F: '{print $1}')
+        do echo $x is a user on this system
+done
+
+                ##WHILE LOOP
+                
+while [ test ];           (need spaces around in brackets)
+do
+        commmands
+done
+
+        or
+        
+a=0
+while [ $a -lt 10 ]
+do
+        echo $a
+        a=`expr $a + 1`
+done
+
+        or
+
+counter=1
+while [ $counter -le 10 ]
+        do
+                echo $counter
+                ((counter++))
+        done
+        echo ALl Done
+
+**bash doesnt look at indentation
+
+                ##UNTIL LOOP
+
+a=0
+until [ $a -gt 10 ]
+do
+        echo $a
+        a=`expr $a + 1`
+done      
+
+                ##BREAK STATEMENT
+     
 
 
+for a in 1 2 3 4 5 6 7 8 9 10
+do 
+        if [ $a == 5 ]
+        then 
+                break
+        fi
+        
+        echo "Iteration no @a"
+done
 
 
+for a in 1 2 3 4 5 6 7 8 9 10
+do 
+        if [ $a == 5 ]
+        then 
+                continue
+        fi
+        
+        echo "Iteration no @a"
+done
 
-
-
-
-
-
-
-
-
-
-
-
-
+**continues over the 5 so output would look like (1 2 3 4 6 7 8 9 10)
 
 
 
