@@ -826,31 +826,33 @@ done
                         
 
 
-#!/bin/bash
-
-# Find all files in /etc directory and obtain their octal permissions
-find /etc -type f -exec stat -c '%a %n' {} + > temp.txt
-
-# Separate the files based on their octal permissions
-awk '{ if ($1 <= 640) print $0 > "low.txt"; else print $0 > "high.txt" }' temp.txt
-
-# Sort and count the files in low.txt and output the results
-echo "Files with octal permissions 0-640:"
-echo "---------------------------------"
-sort "low.txt" | uniq -c | sort -nr
-echo
-
-# Sort and count the files in high.txt and output the results
-echo "Files with octal permissions >= 642:"
-echo "-----------------------------------"
-sort "high.txt" | uniq -c | sort -nr
-echo
-
-# Clean up temporary files
-rm temp.txt low.txt high.txt
+Write a bash script that will find all the files in the /etc directory, and obtains the octal permission of those files. The stat command will be useful for this task.
+Depending how you go about your script, you may find writing to the local directory useful. What you must seperate out from the initial results are the octal permissions of 0-640 and those equal to and greater than 642, ie 0-640 goes to low.txt, while 642 is sent to high.txt.
+Have your script uniquely sort the contents of the two files by count, numerically-reversed, and output the results, with applicable titles, to the screen. An example of the desired output is shown below.
+NOTE: There is a blank line being printed between the two sections of the output below.
 
 
+A=$(find /etc -type f)
+for x in $(find /etc/ -type f)
+do
+        B=$(stat -c '%a' $x)
+        if [ $B -ge 642 ]
+        then
+                 echo $B >> high.txt
 
+        else
+                 echo $B >> low.txt
+
+         fi
+done
+
+C=$(cat high.txt | sort -nr | uniq -c | head -2 | sort -k1r)
+D=$(cat low.txt | sort -nr | uniq -c | head -6 | sort -k1r)
+echo "Files w/ OCTAL Perm Values 642+:"
+echo "$C"
+echo ""
+echo "Files w/ OCTAL Perm Values 0-640:"
+echo "$D"
 
 
 
