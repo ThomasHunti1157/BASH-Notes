@@ -689,6 +689,42 @@ else
    echo "failure";
 fi 
 
+#!/bin/bash
+
+users=("LARRY" "CURLY" "MOE")
+
+passwd_file="$HOME/passwd"
+
+# Check if passwd file exists
+if [[ ! -f "$passwd_file" ]]; then
+    echo "Error: $passwd_file not found."
+    exit 1
+fi
+
+for user in "${users[@]}"; do
+    # Generate userid and groupid
+    id_file="$HOME/$user.txt"
+    if [[ -f "$id_file" ]]; then
+        userid=$(cat "$id_file")
+        groupid=$userid
+    else
+        echo "Error: $id_file not found."
+        exit 1
+    fi
+
+    # Create home directory
+    home_dir="$HOME/$user"
+    if [[ ! -d "$home_dir" ]]; then
+        mkdir "$home_dir"
+        echo "Created home directory: $home_dir"
+    fi
+
+    # Create entry in passwd-like file
+    entry="$user:x:$userid:$groupid::$home_dir:/bin/bash"
+    echo "$entry" >> "$passwd_file"
+
+    echo "Created entry for $user in $passwd_file"
+done
 
 
 
