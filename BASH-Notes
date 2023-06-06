@@ -892,3 +892,175 @@ rm *.del
 
 **awk command for finding line by keyword
 EX: awk '/loss/{print $6}'
+
+                ## Prac Exam
+                
+                ##1
+Replace every instance of 'cat' in "infile" with 'dog'.
+Replace every instance of 'Navy' in "infile" with 'Army'.
+Replacements are case-sensitive.
+Write the output to the file specifed by the variable 'outfile'.
+
+
+function q1()
+{
+  #Valid Variables are:
+  infile=$1
+  outfile=$2
+  sed -i 's/cat/dog/g' $1
+  sed -i 's/Navy/Army/g' $1
+  cat $1 > $2
+
+}
+
+                or
+                sed -e "s/cat/dog/g" -e "s/Navy/Army/g" $infile > $outfile
+
+                ##2
+                
+Create a script that will print to standard output all user names from the /etc/passwd file.
+
+function q1()
+{
+  #Valid Variables are:
+  #none
+  for line in /etc/passwd
+  do
+        A=$(cut -d ":" -f 1 $line)
+        echo $A
+  done
+
+}
+
+                or 
+ cut -d ":" -f 1 $line **alone works*
+ 
+                ##3
+                
+Print to standard output all usernames from the file path specified by the parameter filename sorted ascending numerically by user id.
+The file will be in the format of /etc/passwd
+
+function q1()
+{
+  #Valid Variables are:
+  filename=$1
+  sort -t ':' -k3 -n $1 | awk -F: '{print $1}' 
+  
+}
+
+                ##4
+                
+Print to standard output the total number of files in the directory specified by dirname.
+If the directory does not exist, print 'Invalid Directory'
+The count excludes the '.' and '..' pseudo-directories.
+
+function q1()
+{
+  #Valid Variables are:
+  dirname=$1
+  if [[ ! -d "$1" ]];
+  then 
+        echo "Invalid Directory"
+  else 
+        A=$(ls -1 $1 | wc -l)
+        echo $A
+  fi
+}
+
+                ##5
+                
+Delete all files contained in the directory specified by dirdel
+Also delete the directory specified by dirdel
+
+function q1()
+{
+  #Valid Variables are:
+  dirdel=$1
+  rm -r $1
+}
+
+                ##6
+                
+Create a file specified by the name newfile.
+Set the file modified date to the value specified in filedate and time to '1730'. NOTE: filedate contains only a valid date in YYYYMMDD format, not a time.
+
+function q1()
+{
+  #Valid Variables are:
+  newfile=$1
+  filedate=$2
+  A=$(echo "${2}1730")
+  
+  touch -t $A $1
+}
+                or
+        touch -t "$filedate"1730 $newfile
+
+                ##7
+                
+If contents are 0 to 9, print "single digit" to standard output.
+If contents are 10 to 99, print "double digit" to standard output.
+If contents are 100 to 999, print "triple digit" to standard output.
+Otherwise, print "Error" to standard output.
+
+function q1()
+{
+  #Valid Variables are:
+  fname=$1
+  A=$(cat $1)
+  if [ $A -lt 10 ]
+  then echo "single digit"
+  elif [ $A -gt 9 ] && [ $A -lt 100 ] 
+  then echo "double digit"
+  elif [ $A -gt 99 ] && [ $A -lt 1000 ]
+  then echo "triple digit"
+  else
+  echo "Error"
+  fi
+}
+
+                ##8
+                
+                
+Copy all lines from the file specified by src variable to the file specified by dst variable which DO NOT contain the text specified by match variable.
+
+function q1()
+{
+  #Valid Variables are:
+  src=$1
+  dst=$2
+  match=$3
+  grep -v $3 $1 >> $2
+}
+
+                ##9
+                
+coding bash
+Terminate the process that has the randomly assigned name specified by procname variable. procname does not contain path information.
+
+function q1()
+{
+  #Valid Variables are:
+  procname=$1
+  pkill -f $1
+}
+
+                ##10
+                Create a sorted full-path list of all files in the directory dirpath that were modified within the previous day. Directories should not be included in the output. Print the list to the screen, one item per line.
+
+NOTE: The full paths to files should be in your output. (i.e. /etc/passwd would be included)
+
+NOTE: Directory entries should not be included. (i.e. /etc would NOT be included)
+
+find $1 -type f -mtime -1 | sort
+
+
+
+
+
+
+
+
+
+
+                
