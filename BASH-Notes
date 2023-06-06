@@ -790,6 +790,10 @@ zip $HOME/ZIP/file.zip $HOME/ZIP/* -jq
 cd $HOME/ZIP/
 tar -czvf $HOME/ZIP/file.tar.gz file.zip
 
+        or to chnage directoris with gunzip use -C in the middle location space then the file
+        tar -czf $HOME/ZP/file.tar.gz -C $HOME/ZIP/ file.zip
+        
+
                 ##ACTIVTY 19
                 
 users=("LARRY" "CURLY" "MOE") 
@@ -815,11 +819,19 @@ for user in "${users[@]}"; do
     echo "$entry" >> "$passwd_file"
 
     fi
-    
-
-    
 
 done
+
+                or
+                
+rootline=$( head -1 $HOME/passwd)
+for x in {LARRY,CURLY,MOE} ; do
+        myuid=$(cat $HOME/$x.txt
+        mkdir $HOME/$x
+        echo $rootline | awk -F: -v uname=$x -v userid=$myuid 'BEGIN{OFS=":"}{$1=uname;$3=$4=ui;$6="$HOME/"un}{print $0}' >> $HOME/passwd
+        
+done
+
 
                 ##ACITIVTY 20
                 
@@ -854,5 +866,29 @@ echo ""
 echo "Files w/ OCTAL Perm Values 0-640:"
 echo "$D"
 
+                or
+
+find /etc -type f -printf '%m\n' 2>/dev/null > initial.del
+for octal in $(cat initial.del)
+do
+if [[ $octal -ge 642 ]]; then
+        echo "$octal" >> high.del
+elif [[ $octal -le 640 ]]; then
+        echo "$octal" >> low.del
+fi
+done
+echo "Files w/ OCTAL Perm Values 642+:"
+cat high.del | sort | uniq-c | sort -nr
+echo
+echo "Files w/ OCTAL Perm Values 0-640:"
+cat low.del | sort | uniq -c | sort -nr
 
 
+rm *.del
+      ^
+  given tag allows to go back through and elete any files ending in del
+
+
+
+**awk command for finding line by keyword
+EX: awk '/loss/{print $6}'
